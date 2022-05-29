@@ -2,12 +2,9 @@
 
 
 import math, copy, random
-
 import numpy as np
-
 from cmu_112_graphics import *
 import tkinter as tk
-
 import game_test
 
 ##########################################
@@ -25,16 +22,10 @@ def introScrene1_redrawAll(app, canvas):
 
     canvas.create_text(app.width/2, 250, 
     text='''Click on the rotating cube to start!''', font=font, fill='black')
-    
- 
-    
     game_test.redrawAll(app,canvas)
     
 
 def introScrene1_mousePressed(app, event):
- 
-        
-
     if ((  (app.width/2)+30 > event.x and event.x > (app.width/2)-60)  and
         ((app.height*.45)-70 < event.y and event.y < (app.height*.45)+150)):
             app.mode = 'GameExpo1'
@@ -42,10 +33,7 @@ def introScrene1_mousePressed(app, event):
 
 
 def introScrene1_timerFired(app):
-
- 
-   
- 
+        
         matProj = Matrix(np.array( [[0.0,0.0,0.0,0.0],
                                     [0.0,0.0,0.0,0.0],
                                     [0.0,0.0,0.0,0.0],
@@ -57,9 +45,9 @@ def introScrene1_timerFired(app):
         matProj.proj[2][3] = 1.0
         matProj.proj[3][3] = 0.0
        
-        """replacing app.projected with app.mesh"""
         app.mesh = game_test.multiplyMatrix(app, matProj)    
- 
+    
+        #updates the theta in the rotation matrices by .05 radians per call
         app.theta+=.05
  
         game_test.rotateMesh(app)
@@ -145,9 +133,6 @@ def GameExpo3_redrawAll(app, canvas):
     text = "3: not all walls you raise will help you, only ghosts can travel through diagonal walls!",
         font = font, fill = 'black')
 
-    
-    
-    
     canvas.create_text(app.width/2, 750, 
     text='''with all that out of the way, lets make the board, shall we?''',
                        font=font, fill='black')
@@ -226,9 +211,6 @@ def boardCreation_mousePressed(app,event):
         if (row,col) not in app.wall.map:
             app.wall.map[(row,col)] = set()
 
-
-    
-
         checkIfConnected(row,col, app)
         
         if app.clicked <= app.rows* app.cols:
@@ -236,9 +218,6 @@ def boardCreation_mousePressed(app,event):
 
 def boardCreation_redrawAll(app,canvas):
 
-
-    
-    orange = rgbString(255,184,81)
 
     canvas.create_rectangle(0,0,app.width, app.height, fill = 'black')
     font = 'Arial 26 bold'
@@ -356,17 +335,13 @@ def difficultyLevel_mousePressed(app,event):
 
         app.mode = "Game"
 
-   
-    
     if((app.width*.75)+50 >  event.x and (app.width*.75)-50 <  event.x and
     (app.height*.80)+50>  event.y and (app.height*.80)-50<  event.y ):
-        #do maze generation with the fairly hard algorithm alogrithm
         
         points = []
 
         for i in range(1,15):
             points.append((19,i))
-
 
         for i  in range(16,7,-1):
             points.append((i,17))
@@ -541,9 +516,7 @@ def WinningMode_redrawAll(app,canvas):
     
     
     canvas.create_rectangle(0,0,app.width, app.height, fill ="white")
-
-
-    
+  
     canvas.create_text(app.width/2,app.height/2, text ='You Win!', 
         font = font, fill = "black")
 
@@ -557,7 +530,6 @@ def GameOver_redrawAll(app,canvas):
     canvas.create_rectangle(0,0,app.width, app.height, fill ="black")
 
     font = 'Arial 26 bold'
-
 
     canvas.create_text(app.width/2,app.height/2, text ='Game Over!', 
         font = font, fill = "white")
