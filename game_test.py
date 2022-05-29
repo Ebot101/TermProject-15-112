@@ -1,5 +1,5 @@
 '''this file supports the code for the perspective projection, 
-rotation matriecies and scalling of the 3D cube at the beginning of the game'''
+rotation matrices and scalling of the 3D cube at the beginning of the game'''
 #imports
 import math, copy 
 import numpy as np
@@ -20,16 +20,9 @@ def multiplyMatrix(app, matProj):
     for triangle in range(len(app.projected)):
         triContainer = [ ]
  
-        '''need to be able to rotate the normals along with the cube, but the
-        way i rotate normals is by using this function, which makes sure it doesn't affect the normals
-        so i'll need to have my cake and ear it too  '''
         for coor in range(len(app.projected[triangle])):
             triProj =np.array(app.projected[triangle][coor] +[1])
-                   
-       
- 
             triProj= triProj.dot(matProj.proj)
-           
             if triProj[3]!= 0:
                
                 triProj[0]/=triProj[3]
@@ -37,14 +30,7 @@ def multiplyMatrix(app, matProj):
                 triProj[2]/=triProj[3]
                 triProj[3]/= triProj[3]
    
- 
-               
             triContainer.append(triProj )
-         
-       
-       
- 
-       
         multipliedMesh.append(triContainer )
  
     '''the south and the north sides have the same normals and the
@@ -68,7 +54,6 @@ def appStarted(app):
     matProj.proj[3][2] = ((-app.fFar* app.fNear)/ (app.fFar-app.fNear))
     matProj.proj[2][3] = 1.0
     matProj.proj[3][3] = 0.0
-    '''old app.mesh is in old.app.meshsaver.py'''
  
     app.mesh = [
                 #South
@@ -83,15 +68,9 @@ def appStarted(app):
 [[0, 0, 0], [0, 0, 1], [1, 0, 1], [0, 1, 0]] ,
 [[0, 0, 0], [1, 0, 1], [1, 0, 0], [0, 1, 0]] ,
 [[1, 1, 1], [0, 1, 0], [0, 1, 1], [0, -1, 0]] ,
-[[1, 1, 1], [1, 1, 0], [0, 1, 0], [0, -1, 0]] ,   
-
-
- 
-
-               ]
+[[1, 1, 1], [1, 1, 0], [0, 1, 0], [0, -1, 0]] , 
+                ]
        
-   
- 
     app.projected = copy.deepcopy(app.mesh)
     app.scaled = copy.deepcopy(app.mesh)
     app.mesh = multiplyMatrix(app, matProj)
@@ -130,41 +109,29 @@ def rotateMesh(app):
     matRoty.proj[2][2] = math.cos(app.theta)
     matRoty.proj[3][3] = 1    
  
- 
- 
     matRotf = Matrix(np.array(matRotx.proj.dot(matRotz.proj)))
-
-
- 
- 
-    """replacing app.projected with app.mesh"""
-   
- 
     app.mesh = multiplyMatrix(app,matRotx)
-def timerFired(app):
 
- 
-   
- 
-        matProj = Matrix(np.array( [[0.0,0.0,0.0,0.0],
-                                    [0.0,0.0,0.0,0.0],
-                                    [0.0,0.0,0.0,0.0],
-                                    [0.0,0.0,0.0,0.0],]))
-        matProj.proj[0][0] = app.aspectRatio * app.fFovRad
-        matProj.proj[1][1] = app.fFovRad
-        matProj.proj[2][2] = app.fFar/ (app.fFar-app.fNear)
-        matProj.proj[3][2] = ((-app.fFar* app.fNear)/ (app.fFar-app.fNear))
-        matProj.proj[2][3] = 1.0
-        matProj.proj[3][3] = 0.0
-       
-        """replacing app.projected with app.mesh"""
-        app.mesh = multiplyMatrix(app, matProj)    
- 
-        app.theta+=.05
- 
-        rotateMesh(app)
- 
-        ScaleTri(app)
+def timerFired(app):
+    matProj = Matrix(np.array( [[0.0,0.0,0.0,0.0],
+                                [0.0,0.0,0.0,0.0],
+                                [0.0,0.0,0.0,0.0],
+                                [0.0,0.0,0.0,0.0],]))
+    matProj.proj[0][0] = app.aspectRatio * app.fFovRad
+    matProj.proj[1][1] = app.fFovRad
+    matProj.proj[2][2] = app.fFar/ (app.fFar-app.fNear)
+    matProj.proj[3][2] = ((-app.fFar* app.fNear)/ (app.fFar-app.fNear))
+    matProj.proj[2][3] = 1.0
+    matProj.proj[3][3] = 0.0
+    
+    """replacing app.projected with app.mesh"""
+    app.mesh = multiplyMatrix(app, matProj)    
+
+    app.theta+=.05
+
+    rotateMesh(app)
+
+    ScaleTri(app)
 def ScaleTri(app):
  
  
@@ -174,8 +141,6 @@ def ScaleTri(app):
   #1084488 ITEM 0-A3
  
     for triangle in app.scaled:
-       
-
         for i in range(len(triangle)-1):
             triangle[i][0] = (triangle[i][0]+9)*(.1* smallest)
  
@@ -184,22 +149,8 @@ def redrawAll(app, canvas):
     '''changes'''
  
     for tri in range (len(app.scaled)):
-       
-
-       
-       
         if(app.scaled[tri][3][1] <= 0 ):
-            
-
-
- 
- 
-           
             for i in range(len(app.scaled[tri])):
-                
-                
- 
-           
                 canvas.create_line(app.scaled[tri][0][0], app.scaled[tri][0][1],
                                     app.scaled[tri][1][0], app.scaled[tri][1][1],
                 fill= 'black'  )
